@@ -73,3 +73,5 @@ project-root/
 ______________________________________________________________________________________________________________________________________
 1- pop that show you your last trades 
 2- trade in (1,5,10,15,30) min and 1,2,3,4 H and 1 D and 1 W 
+3- every challenge with his journal
+4-
