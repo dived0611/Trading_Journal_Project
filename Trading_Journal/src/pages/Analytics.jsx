@@ -8,10 +8,10 @@ import {
   TrendingUp,
   Calendar
 } from 'lucide-react'
-import { Line } from 'react-chartjs-2'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler } from 'chart.js'
+import { Line, Bar, Doughnut, Scatter } from 'react-chartjs-2'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler, BarElement, ArcElement } from 'chart.js'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler, BarElement, ArcElement)
 
 const Analytics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('Today');
@@ -135,6 +135,195 @@ const Analytics = () => {
   };
   
   //! End sample chart data
+  // Additional demo datasets for the other cards (static)
+  const monthlyPerformanceData = {
+    labels: ['Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Monthly P&L',
+        data: [1245, 1890, 3247],
+        backgroundColor: 'rgba(59, 130, 246, 0.9)'
+      }
+    ]
+  };
+
+  const monthlyPerformanceOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#6b7280' }
+      },
+      y: {
+        grid: { color: 'rgba(226, 232, 240, 0.7)' },
+        ticks: { color: '#6b7280' }
+      }
+    }
+  };
+
+  const strategyPerformanceData = {
+    labels: ['Breakout', 'Reversal', 'Scalping', 'Support/Resistance'],
+    datasets: [
+      {
+        data: [1648, 973, 463, 163],
+        backgroundColor: [
+          'rgba(59, 130, 246, 0.9)',
+          'rgba(45, 212, 191, 0.9)',
+          'rgba(250, 204, 21, 0.9)',
+          'rgba(248, 113, 113, 0.9)'
+        ],
+        borderWidth: 0
+      }
+    ]
+  };
+
+  const strategyOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { color: '#6b7280', boxWidth: 12 }
+      }
+    }
+  };
+
+  const riskScatterData = {
+    datasets: [
+      {
+        label: 'Risk vs Reward',
+        data: [
+          { x: 0.8, y: 2.2 },
+          { x: 1.2, y: 3.1 },
+          { x: 1.7, y: 2.8 },
+          { x: 1.9, y: 3.6 },
+          { x: 2.1, y: 3.2 },
+          { x: 2.3, y: 4.7 },
+          { x: 2.5, y: 4.0 },
+          { x: 2.6, y: 6.1 },
+          { x: 3.0, y: 5.5 }
+        ],
+        backgroundColor: 'rgba(59, 130, 246, 0.9)'
+      }
+    ]
+  };
+
+  const riskScatterOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        title: { display: true, text: 'Risk %' },
+        min: 0,
+        max: 3.2,
+        grid: { color: 'rgba(226, 232, 240, 0.7)' },
+        ticks: { color: '#6b7280' }
+      },
+      y: {
+        title: { display: true, text: 'Reward %' },
+        min: 0,
+        max: 7,
+        grid: { color: 'rgba(226, 232, 240, 0.7)' },
+        ticks: { color: '#6b7280' }
+      }
+    }
+  };
+  
+  // Drawdown (negative percentages)
+  const drawdownSeries = [
+    { date: '2024-11-01', value: -0.2 },
+    { date: '2024-11-08', value: -3.1 },
+    { date: '2024-11-15', value: -5.9 },
+    { date: '2024-11-22', value: -3.7 },
+    { date: '2024-11-29', value: -9.4 },
+    { date: '2024-12-06', value: -4.8 },
+    { date: '2024-12-13', value: -0.6 }
+  ];
+
+  const drawdownData = {
+    labels: drawdownSeries.map(p => new Date(p.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })),
+    datasets: [
+      {
+        label: 'Drawdown %',
+        data: drawdownSeries.map(p => p.value),
+        borderColor: 'rgba(248, 113, 113, 1)',
+        backgroundColor: 'rgba(248, 113, 113, 0.18)',
+        fill: 'origin',
+        tension: 0.35,
+        pointRadius: 0,
+        borderWidth: 3
+      }
+    ]
+  };
+
+  const drawdownOptions = {
+    ...chartOptions,
+    scales: {
+      x: { ...chartOptions.scales.x },
+      y: {
+        ...chartOptions.scales.y,
+        min: -15,
+        max: 0,
+        ticks: { color: '#6b7280', callback: (v) => `${v}%` }
+      }
+    }
+  };
+
+  // Session performance (horizontal bars)
+  const sessionBarData = {
+    labels: ['New York', 'London', 'Asian'],
+    datasets: [
+      {
+        label: 'P&L ($)',
+        data: [1137, 1456, 654],
+        backgroundColor: ['#f59e0b', '#10b981', '#60a5fa']
+      }
+    ]
+  };
+
+  const sessionBarOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        grid: { color: 'rgba(226, 232, 240, 0.7)' },
+        ticks: { color: '#6b7280' }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#6b7280' }
+      }
+    }
+  };
+
+  // Heatmap helpers
+  const heatmapWeeks = ['W6', 'W5', 'W4', 'W3', 'W2', 'W1'];
+  const heatmapDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  // values roughly between -3 and 3
+  const heatmapValues = [
+    [0.2, -0.1, 0.6, 1.0, 0.3],
+    [0.9, 1.2, -0.4, 0.8, 0.7],
+    [0.4, 0.2, 0.5, -0.3, 1.1],
+    [0.1, 0.6, 0.2, 0.4, 0.9],
+    [0.2, -0.5, 0.3, 0.6, 0.2],
+    [0.1, 0.3, 0.8, 0.2, 0.5]
+  ];
+
+  const getHeatColor = (value) => {
+    // map -1..1 to red..blue using simple interpolation
+    const v = Math.max(-1, Math.min(1, value));
+    const r = v < 0 ? 245 : 59; // red for negative, blue for positive
+    const g = v < 0 ? 113 : 130;
+    const b = v < 0 ? 113 : 246;
+    const alpha = 0.15 + Math.abs(v) * 0.75; // stronger with magnitude
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+  
   // Sample metrics data
   // In a real app, this would come from an API or database
   // and be calculated based on the selected date range
@@ -326,6 +515,198 @@ const Analytics = () => {
                   }
                 }}
               />
+            </div>
+          </div>
+        </div>
+        
+        {/* Secondary Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* Monthly Performance */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Monthly Performance</h2>
+              </div>
+            </div>
+            <div className="h-72">
+              <Bar data={monthlyPerformanceData} options={monthlyPerformanceOptions} />
+            </div>
+          </div>
+
+          {/* Strategy Performance */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-amber-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Strategy Performance</h2>
+              </div>
+            </div>
+            <div className="h-72">
+              <Doughnut data={strategyPerformanceData} options={strategyOptions} />
+            </div>
+          </div>
+
+          {/* Risk Analysis */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Risk Analysis</h2>
+              </div>
+            </div>
+            <div className="h-72">
+              <Scatter data={riskScatterData} options={riskScatterOptions} />
+            </div>
+          </div>
+        </div>
+
+        {/* Tertiary Charts/Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* Drawdown Analysis */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-rose-400" />
+                <h2 className="text-xl font-semibold text-gray-800">Drawdown Analysis</h2>
+              </div>
+            </div>
+            <div className="h-72">
+              <Line data={drawdownData} options={drawdownOptions} />
+            </div>
+          </div>
+
+          {/* Weekly Heatmap */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Weekly Heatmap</h2>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center mb-3 text-xs text-gray-500">
+                <div className="h-2 w-16 rounded-l bg-rose-300" />
+                <div className="h-2 w-16 bg-rose-200" />
+                <div className="h-2 w-16 bg-gray-100" />
+                <div className="h-2 w-16 bg-blue-200" />
+                <div className="h-2 w-16 rounded-r bg-blue-400" />
+                <span className="ml-2">-1 to +1</span>
+              </div>
+              <div className="grid grid-cols-6 gap-2">
+                <div className="text-xs text-gray-500" />
+                {heatmapDays.map((d) => (
+                  <div key={d} className="text-xs text-gray-500 text-center">{d}</div>
+                ))}
+                {heatmapWeeks.map((w, wi) => (
+                  <React.Fragment key={w}>
+                    <div className="text-xs text-gray-500 flex items-center">{w}</div>
+                    {heatmapDays.map((d, di) => (
+                      <div
+                        key={`${w}-${d}`}
+                        className="h-8 rounded flex items-center justify-center text-[10px] text-gray-600"
+                        style={{ backgroundColor: getHeatColor(heatmapValues[wi][di]) }}
+                      >
+                        
+                      </div>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Session Performance */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-cyan-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Session Performance</h2>
+              </div>
+            </div>
+            <div className="h-72">
+              <Bar data={sessionBarData} options={sessionBarOptions} />
+            </div>
+          </div>
+        </div>
+
+        {/* Performance Tables */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          {/* Strategy Performance Table */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Strategy Performance</h2>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-500">
+                    <th className="py-2 pr-4 font-medium">Strategy</th>
+                    <th className="py-2 pr-4 font-medium">Trades</th>
+                    <th className="py-2 pr-4 font-medium">Win Rate</th>
+                    <th className="py-2 pr-4 font-medium">Avg P&L</th>
+                    <th className="py-2 pr-0 font-medium">Sharpe</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-700">
+                  {[
+                    { name: 'Breakout', trades: 89, win: 78, avg: 18.5, sharpe: 1.42 },
+                    { name: 'Reversal', trades: 64, win: 71, avg: 15.2, sharpe: 1.18 },
+                    { name: 'Scalping', trades: 52, win: 65, avg: 8.9, sharpe: 0.95 },
+                    { name: 'Support/Resistance', trades: 42, win: 76, avg: 22.1, sharpe: 1.65 }
+                  ].map((row) => (
+                    <tr key={row.name} className="border-t border-gray-100">
+                      <td className="py-3 pr-4">{row.name}</td>
+                      <td className="py-3 pr-4">{row.trades}</td>
+                      <td className="py-3 pr-4"><span className="text-green-600">{row.win}%</span></td>
+                      <td className="py-3 pr-4"><span className="text-green-600">+${row.avg.toFixed(2)}</span></td>
+                      <td className="py-3 pr-0">{row.sharpe.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Symbol Performance Table */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <h2 className="text-xl font-semibold text-gray-800">Symbol Performance</h2>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-500">
+                    <th className="py-2 pr-4 font-medium">Symbol</th>
+                    <th className="py-2 pr-4 font-medium">Trades</th>
+                    <th className="py-2 pr-4 font-medium">Win Rate</th>
+                    <th className="py-2 pr-4 font-medium">Total P&L</th>
+                    <th className="py-2 pr-0 font-medium">Max Loss</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-700">
+                  {[
+                    { symbol: 'EURUSD', trades: 67, win: 75, pnl: 1245, maxLoss: -85 },
+                    { symbol: 'GBPUSD', trades: 54, win: 72, pnl: 987, maxLoss: -92 },
+                    { symbol: 'USDJPY', trades: 43, win: 68, pnl: 654, maxLoss: -78 },
+                    { symbol: 'AUDUSD', trades: 38, win: 71, pnl: 361, maxLoss: -65 }
+                  ].map((row) => (
+                    <tr key={row.symbol} className="border-t border-gray-100">
+                      <td className="py-3 pr-4">{row.symbol}</td>
+                      <td className="py-3 pr-4">{row.trades}</td>
+                      <td className="py-3 pr-4"><span className="text-green-600">{row.win}%</span></td>
+                      <td className="py-3 pr-4"><span className="text-green-600">+${row.pnl.toLocaleString()}</span></td>
+                      <td className="py-3 pr-0"><span className="text-red-600">${row.maxLoss}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
