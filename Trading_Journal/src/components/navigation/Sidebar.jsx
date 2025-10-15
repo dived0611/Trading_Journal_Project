@@ -27,7 +27,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className='sidebar w-20 p-5 h-screen shadow-xl flex flex-col items-center'>
+        <div className='sidebar w-20 p-5 h-screen fixed shadow-xl flex flex-col items-center'>
             <div className='flex flex-col items-center gap-8'>
                 <Link to="/">
                     <div className="p-3 rounded-full w-[70px] h-[70px] flex items-center justify-center">

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { 
   ArrowUp, 
   ArrowDown, 
@@ -17,6 +18,23 @@ const Analytics = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('Today');
   const [startDate, setStartDate] = useState('2024-11-01');
   const [endDate, setEndDate] = useState('2024-12-15');
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/analytics');
+        setAnalyticsData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
 
   const periodOptions = [
     'Now',
@@ -35,43 +53,50 @@ const Analytics = () => {
     const formatDate = (date) => date.toISOString().split('T')[0];
     
     switch (period) {
-      case 'Now':
+      case 'Now': {
         const now = new Date();
         setStartDate(formatDate(now));
         setEndDate(formatDate(now));
         break;
-      case 'Today':
+      }
+      case 'Today': {
         setStartDate(formatDate(today));
         setEndDate(formatDate(today));
         break;
-      case 'This Week':
+      }
+      case 'This Week': {
         const weekStart = new Date(today);
         weekStart.setDate(today.getDate() - today.getDay());
         setStartDate(formatDate(weekStart));
         setEndDate(formatDate(today));
         break;
-      case 'This Month':
+      }
+      case 'This Month': {
         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
         setStartDate(formatDate(monthStart));
         setEndDate(formatDate(today));
         break;
-      case 'Last 30 Days':
+      }
+      case 'Last 30 Days': {
         const thirtyDaysAgo = new Date(today);
         thirtyDaysAgo.setDate(today.getDate() - 30);
         setStartDate(formatDate(thirtyDaysAgo));
         setEndDate(formatDate(today));
         break;
-      case 'Last 90 Days':
+      }
+      case 'Last 90 Days': {
         const ninetyDaysAgo = new Date(today);
         ninetyDaysAgo.setDate(today.getDate() - 90);
         setStartDate(formatDate(ninetyDaysAgo));
         setEndDate(formatDate(today));
         break;
-      case 'Year to Date':
+      }
+      case 'Year to Date': {
         const yearStart = new Date(today.getFullYear(), 0, 1);
         setStartDate(formatDate(yearStart));
         setEndDate(formatDate(today));
         break;
+      }
       default:
         break;
     }
@@ -324,59 +349,7 @@ const Analytics = () => {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   };
   
-  // Sample metrics data
-  // In a real app, this would come from an API or database
-  // and be calculated based on the selected date range
-  const metrics = [
-    {
-      title: 'Total P&L',
-      value: '$3,247',
-      change: '+12.5%',
-      icon: <ArrowUp className="w-5 h-5 text-green-500" />,
-      trend: 'up',
-      color: 'text-green-500'
-    },
-    {
-      title: 'Win Rate',
-      value: '73%',
-      change: '+2.1%',
-      icon: <Trophy className="w-5 h-5 text-blue-500" />,
-      trend: 'up',
-      color: 'text-green-500'
-    },
-    {
-      title: 'Total Trades',
-      value: '247',
-      change: '+8 today',
-      icon: <Book className="w-5 h-5 text-indigo-500" />,
-      trend: 'up',
-      color: 'text-green-500'
-    },
-    {
-      title: 'Risk per Trade',
-      value: '2.1%',
-      change: 'Avg',
-      icon: <Zap className="w-5 h-5 text-orange-500" />,
-      trend: 'neutral',
-      color: 'text-gray-500'
-    },
-    {
-      title: 'Win Streak',
-      value: '12',
-      change: 'Current',
-      icon: <TrendingUp className="w-5 h-5 text-purple-500" />,
-      trend: 'up',
-      color: 'text-green-500'
-    },
-    {
-      title: 'Max Drawdown',
-      value: '-8.5%',
-      change: '-1.2%',
-      icon: <ArrowDown className="w-5 h-5 text-red-500" />,
-      trend: 'down',
-      color: 'text-red-500'
-    }
-  ];
+  // Using metrics from API response (analyticsData.metrics)
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -396,25 +369,89 @@ const Analytics = () => {
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-          {metrics.map((metric, index) => (
-            <div 
-              key={index}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center space-x-2">
-                  {metric.icon}
-                  <span className={`text-sm ${metric.color}`}>
-                    {metric.change}
-                  </span>
+          {loading ? (
+            <div>Loading...</div>
+          ) : analyticsData?.metrics?.map((metric, index) => {
+            // Determine icon and color based on metric title and trend
+            let icon;
+            let color;
+            
+            switch (metric.title) {
+              case 'Total P&L':
+                icon = <ArrowUp className="w-5 h-5 text-green-500" />;
+                break;
+              case 'Win Rate':
+                icon = <Trophy className="w-5 h-5 text-blue-500" />;
+                break;
+              case 'Total Trades':
+                icon = <Book className="w-5 h-5 text-indigo-500" />;
+                break;
+              case 'Risk per Trade':
+                icon = <Zap className="w-5 h-5 text-orange-500" />;
+                break;
+              case 'Win Streak':
+                icon = <TrendingUp className="w-5 h-5 text-purple-500" />;
+                break;
+              case 'Max Drawdown':
+                icon = <ArrowDown className="w-5 h-5 text-red-500" />;
+                break;
+              default:
+                icon = <TrendingUp className="w-5 h-5 text-blue-500" />;
+            }
+
+            // Set color based on trend
+            if (metric.trend === 'up') {
+              color = 'text-green-500';
+            } else if (metric.trend === 'down') {
+              color = 'text-red-500';
+            } else {
+              color = 'text-gray-500';
+            }
+
+            // Format the value based on metric type
+            let formattedValue = metric.value;
+            let formattedChange = metric.change;
+
+            if (metric.title === 'Total P&L') {
+              formattedValue = `$${metric.value.toLocaleString()}`;
+              formattedChange = `${metric.change > 0 ? '+' : ''}${metric.change}%`;
+            } else if (metric.title === 'Win Rate') {
+              formattedValue = `${metric.value}%`;
+              formattedChange = `${metric.change > 0 ? '+' : ''}${metric.change}%`;
+            } else if (metric.title === 'Total Trades') {
+              formattedValue = metric.value.toString();
+              formattedChange = `${metric.change > 0 ? '+' : ''}${metric.change} today`;
+            } else if (metric.title === 'Risk per Trade') {
+              formattedValue = `${metric.value}%`;
+              formattedChange = 'Avg';
+            } else if (metric.title === 'Win Streak') {
+              formattedValue = metric.value.toString();
+              formattedChange = 'Current';
+            } else if (metric.title === 'Max Drawdown') {
+              formattedValue = `${metric.value}%`;
+              formattedChange = `${metric.change}%`;
+            }
+
+            return (
+              <div 
+                key={index}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center space-x-2">
+                    {icon}
+                    <span className={`text-sm ${color}`}>
+                      {formattedChange}
+                    </span>
+                  </div>
+                </div>
+                <div className="mb-2">
+                  <div className="text-2xl font-bold text-gray-800">{formattedValue}</div>
+                  <div className="text-sm text-gray-500 mt-1">{metric.title}</div>
                 </div>
               </div>
-              <div className="mb-2">
-                <div className="text-2xl font-bold text-gray-800">{metric.value}</div>
-                <div className="text-sm text-gray-500 mt-1">{metric.title}</div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Time Period Selector */}

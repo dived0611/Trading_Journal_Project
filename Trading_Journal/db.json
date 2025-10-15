@@ -1,0 +1,82 @@
+{
+  "analytics": {
+    "metrics": [
+      { "title": "Total P&L", "value": 3247, "change": 12.5, "trend": "up" },
+      { "title": "Win Rate", "value": 73, "change": 2.1, "trend": "up" },
+      { "title": "Total Trades", "value": 247, "change": 8, "trend": "up" },
+      { "title": "Risk per Trade", "value": 2.1, "change": 0, "trend": "neutral" },
+      { "title": "Win Streak", "value": 12, "change": 0, "trend": "up" },
+      { "title": "Max Drawdown", "value": -8.5, "change": -1.2, "trend": "down" }
+    ],
+    "profitLoss": [
+      { "date": "2024-11-01", "value": 120 },
+      { "date": "2024-11-03", "value": 180 },
+      { "date": "2024-11-05", "value": 250 },
+      { "date": "2024-11-10", "value": 520 },
+      { "date": "2024-11-15", "value": 1120 },
+      { "date": "2024-11-20", "value": 3247 }
+    ],
+    "winRateTrends": [
+      { "week": "Week 1", "value": 68 },
+      { "week": "Week 2", "value": 72 },
+      { "week": "Week 3", "value": 74 },
+      { "week": "Week 4", "value": 71 },
+      { "week": "Week 5", "value": 78 },
+      { "week": "Week 6", "value": 75 }
+    ],
+    "monthlyPerformance": [
+      { "month": "Oct", "value": 1245 },
+      { "month": "Nov", "value": 1890 },
+      { "month": "Dec", "value": 3247 }
+    ],
+    "strategyPerformance": [
+      { "strategy": "Breakout", "trades": 89, "winRate": 78, "avgPL": 18.5, "pnl": 1648, "sharpe": 1.42 },
+      { "strategy": "Reversal", "trades": 64, "winRate": 71, "avgPL": 15.2, "pnl": 973, "sharpe": 1.18 },
+      { "strategy": "Scalping", "trades": 94, "winRate": 69, "avgPL": 12.8, "pnl": 463, "sharpe": 0.95 },
+      { "strategy": "Support/Resistance", "trades": 42, "winRate": 76, "avgPL": 22.1, "pnl": 163, "sharpe": 1.65 }
+    ],
+    "symbolPerformance": [
+      { "symbol": "EURUSD", "trades": 67, "winRate": 75, "pnl": 1245, "maxLoss": -85 },
+      { "symbol": "GBPUSD", "trades": 54, "winRate": 72, "pnl": 987, "maxLoss": -92 },
+      { "symbol": "USDJPY", "trades": 43, "winRate": 68, "pnl": 654, "maxLoss": -78 },
+      { "symbol": "AUDUSD", "trades": 38, "winRate": 71, "pnl": 361, "maxLoss": -65 }
+    ],
+    "drawdown": [
+      { "date": "2024-11-01", "value": -0.2 },
+      { "date": "2024-11-08", "value": -3.1 },
+      { "date": "2024-11-15", "value": -5.9 },
+      { "date": "2024-11-22", "value": -3.7 },
+      { "date": "2024-11-29", "value": -9.4 },
+      { "date": "2024-12-06", "value": -4.8 },
+      { "date": "2024-12-13", "value": -0.6 }
+    ],
+    "sessionPerformance": [
+      { "session": "New York", "pnl": 1137 },
+      { "session": "London", "pnl": 1456 },
+      { "session": "Asian", "pnl": 654 }
+    ],
+    "riskReward": [
+      { "risk": 0.8, "reward": 2.2 },
+      { "risk": 1.2, "reward": 3.1 },
+      { "risk": 1.7, "reward": 2.8 },
+      { "risk": 1.9, "reward": 3.6 },
+      { "risk": 2.1, "reward": 3.2 },
+      { "risk": 2.3, "reward": 4.7 },
+      { "risk": 2.5, "reward": 4.0 },
+      { "risk": 2.6, "reward": 6.1 },
+      { "risk": 3.0, "reward": 5.5 }
+    ],
+    "weeklyHeatmap": {
+      "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      "weeks": ["W6", "W5", "W4", "W3", "W2", "W1"],
+      "values": [
+        [0.2, -0.1, 0.6, 1.0, 0.3],
+        [0.9, 1.2, -0.4, 0.8, 0.7],
+        [0.4, 0.2, 0.5, -0.3, 1.1],
+        [0.1, 0.6, 0.2, 0.4, 0.9],
+        [0.2, -0.5, 0.3, 0.6, 0.2],
+        [0.1, 0.3, 0.8, 0.2, 0.5]
+      ]
+    }
+  }
+}
