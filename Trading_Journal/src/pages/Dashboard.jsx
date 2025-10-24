@@ -2,14 +2,15 @@ import React from 'react'
 
 const Dashboard = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-2">Trading Summary</h2>
-          <p>Your trading metrics will be displayed here</p>
+        <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto"></div>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <button className="px-4 py-2 bg-[#1d7ed1] text-white rounded-lg hover:bg-[#1666ab] transition-colors">
+            New Report
+          </button>
         </div>
-      </div>
     </div>
   )
 }

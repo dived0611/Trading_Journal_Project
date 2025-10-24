@@ -18,7 +18,7 @@
     "axios": "^1.12.2",
     "chart.js": "^4.5.1",
     "chartjs-chart-matrix": "^3.0.0",
-    "framer-motion": "^12.23.22",
+    "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
     "motion": "^12.23.22",
     "react": "^19.1.1",

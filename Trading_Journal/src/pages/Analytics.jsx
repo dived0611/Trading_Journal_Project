@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { Line, Bar, Doughnut, Scatter } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler, BarElement, ArcElement } from 'chart.js'
-
+// import metaData from '../data/meta.json';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler, BarElement, ArcElement)
 
 const Analytics = () => {
@@ -102,23 +102,7 @@ const Analytics = () => {
     }
   };
 
-  // Sample Profit & Loss series (USD) by date
-  // this is static data for demo purposes
-  // in a real app, this would come from an API or database
-  // and be filtered based on the selected date range
-  const plSeries = [
-    { date: '2024-11-01', value: 0 },
-    { date: '2024-11-05', value: 250 },
-    { date: '2024-11-10', value: 520 },
-    { date: '2024-11-14', value: 1120 },
-    { date: '2024-11-18', value: 1050 },
-    { date: '2024-11-22', value: 980 },
-    { date: '2024-11-29', value: 1600 },
-    { date: '2024-12-02', value: 1800 },
-    { date: '2024-12-06', value: 2000 },
-    { date: '2024-12-10', value: 2600 },
-    { date: '2024-12-13', value: 3250 }
-  ];
+  const plSeries = analyticsData?.profitLoss || [];
 
   const filteredPl = plSeries.filter(p => p.date >= startDate && p.date <= endDate);
   const chartLabels = filteredPl.map(p => new Date(p.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
@@ -162,11 +146,11 @@ const Analytics = () => {
   //! End sample chart data
   // Additional demo datasets for the other cards (static)
   const monthlyPerformanceData = {
-    labels: ['Oct', 'Nov', 'Dec'],
+    labels: analyticsData?.monthlyPerformance?.map(item => item.month) || [],
     datasets: [
       {
         label: 'Monthly P&L',
-        data: [1245, 1890, 3247],
+        data: analyticsData?.monthlyPerformance?.map(item => item.value) || [],
         backgroundColor: 'rgba(59, 130, 246, 0.9)'
       }
     ]
@@ -189,10 +173,10 @@ const Analytics = () => {
   };
 
   const strategyPerformanceData = {
-    labels: ['Breakout', 'Reversal', 'Scalping', 'Support/Resistance'],
+    labels: analyticsData?.strategyPerformance?.map(item => item.strategy) || [],
     datasets: [
       {
-        data: [1648, 973, 463, 163],
+        data: analyticsData?.strategyPerformance?.map(item => item.pnl) || [],
         backgroundColor: [
           'rgba(59, 130, 246, 0.9)',
           'rgba(45, 212, 191, 0.9)',
@@ -219,17 +203,7 @@ const Analytics = () => {
     datasets: [
       {
         label: 'Risk vs Reward',
-        data: [
-          { x: 0.8, y: 2.2 },
-          { x: 1.2, y: 3.1 },
-          { x: 1.7, y: 2.8 },
-          { x: 1.9, y: 3.6 },
-          { x: 2.1, y: 3.2 },
-          { x: 2.3, y: 4.7 },
-          { x: 2.5, y: 4.0 },
-          { x: 2.6, y: 6.1 },
-          { x: 3.0, y: 5.5 }
-        ],
+        data: analyticsData?.riskReward?.map(item => ({ x: item.risk, y: item.reward })) || [],
         backgroundColor: 'rgba(59, 130, 246, 0.9)'
       }
     ]
@@ -257,16 +231,7 @@ const Analytics = () => {
     }
   };
   
-  // Drawdown (negative percentages)
-  const drawdownSeries = [
-    { date: '2024-11-01', value: -0.2 },
-    { date: '2024-11-08', value: -3.1 },
-    { date: '2024-11-15', value: -5.9 },
-    { date: '2024-11-22', value: -3.7 },
-    { date: '2024-11-29', value: -9.4 },
-    { date: '2024-12-06', value: -4.8 },
-    { date: '2024-12-13', value: -0.6 }
-  ];
+  const drawdownSeries = analyticsData?.drawdown || [];
 
   const drawdownData = {
     labels: drawdownSeries.map(p => new Date(p.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })),
@@ -299,11 +264,11 @@ const Analytics = () => {
 
   // Session performance (horizontal bars)
   const sessionBarData = {
-    labels: ['New York', 'London', 'Asian'],
+    labels: analyticsData?.sessionPerformance?.map(item => item.session) || [],
     datasets: [
       {
         label: 'P&L ($)',
-        data: [1137, 1456, 654],
+        data: analyticsData?.sessionPerformance?.map(item => item.pnl) || [],
         backgroundColor: ['#f59e0b', '#10b981', '#60a5fa']
       }
     ]
@@ -326,18 +291,10 @@ const Analytics = () => {
     }
   };
 
-  // Heatmap helpers
-  const heatmapWeeks = ['W6', 'W5', 'W4', 'W3', 'W2', 'W1'];
-  const heatmapDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-  // values roughly between -3 and 3
-  const heatmapValues = [
-    [0.2, -0.1, 0.6, 1.0, 0.3],
-    [0.9, 1.2, -0.4, 0.8, 0.7],
-    [0.4, 0.2, 0.5, -0.3, 1.1],
-    [0.1, 0.6, 0.2, 0.4, 0.9],
-    [0.2, -0.5, 0.3, 0.6, 0.2],
-    [0.1, 0.3, 0.8, 0.2, 0.5]
-  ];
+  // Heatmap data from API
+  const heatmapWeeks = analyticsData?.weeklyHeatmap?.weeks || [];
+  const heatmapDays = analyticsData?.weeklyHeatmap?.days || [];
+  const heatmapValues = analyticsData?.weeklyHeatmap?.values || [];
 
   const getHeatColor = (value) => {
     // map -1..1 to red..blue using simple interpolation
@@ -688,18 +645,13 @@ const Analytics = () => {
                     <th className="py-2 pr-0 font-medium">Sharpe</th>
                   </tr>
                 </thead>
-                <tbody className="text-gray-700">
-                  {[
-                    { name: 'Breakout', trades: 89, win: 78, avg: 18.5, sharpe: 1.42 },
-                    { name: 'Reversal', trades: 64, win: 71, avg: 15.2, sharpe: 1.18 },
-                    { name: 'Scalping', trades: 52, win: 65, avg: 8.9, sharpe: 0.95 },
-                    { name: 'Support/Resistance', trades: 42, win: 76, avg: 22.1, sharpe: 1.65 }
-                  ].map((row) => (
-                    <tr key={row.name} className="border-t border-gray-100">
-                      <td className="py-3 pr-4">{row.name}</td>
+                <tbody className="text-gray-700 ">
+                  {analyticsData?.strategyPerformance?.map((row) => (
+                    <tr key={row.name} className="border-t border-gray-100 hover:bg-blue-50 hover:scale-[1.02] transition-all duration-200 cursor-pointer">
+                      <td className="py-3 pr-4">{row.strategy}</td>
                       <td className="py-3 pr-4">{row.trades}</td>
-                      <td className="py-3 pr-4"><span className="text-green-600">{row.win}%</span></td>
-                      <td className="py-3 pr-4"><span className="text-green-600">+${row.avg.toFixed(2)}</span></td>
+                      <td className="py-3 pr-4"><span className="text-green-600">{row.winRate}%</span></td>
+                      <td className="py-3 pr-4"><span className="text-green-600">+${row.avgPL.toFixed(2)}</span></td>
                       <td className="py-3 pr-0">{row.sharpe.toFixed(2)}</td>
                     </tr>
                   ))}
@@ -728,16 +680,11 @@ const Analytics = () => {
                   </tr>
                 </thead>
                 <tbody className="text-gray-700">
-                  {[
-                    { symbol: 'EURUSD', trades: 67, win: 75, pnl: 1245, maxLoss: -85 },
-                    { symbol: 'GBPUSD', trades: 54, win: 72, pnl: 987, maxLoss: -92 },
-                    { symbol: 'USDJPY', trades: 43, win: 68, pnl: 654, maxLoss: -78 },
-                    { symbol: 'AUDUSD', trades: 38, win: 71, pnl: 361, maxLoss: -65 }
-                  ].map((row) => (
+                  {analyticsData?.symbolPerformance?.map((row) => (
                     <tr key={row.symbol} className="border-t border-gray-100">
                       <td className="py-3 pr-4">{row.symbol}</td>
                       <td className="py-3 pr-4">{row.trades}</td>
-                      <td className="py-3 pr-4"><span className="text-green-600">{row.win}%</span></td>
+                      <td className="py-3 pr-4"><span className="text-green-600">{row.winRate}%</span></td>
                       <td className="py-3 pr-4"><span className="text-green-600">+${row.pnl.toLocaleString()}</span></td>
                       <td className="py-3 pr-0"><span className="text-red-600">${row.maxLoss}</span></td>
                     </tr>
