@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import ErrorMessage from '../ui/ErrorMessage';
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -23,10 +24,16 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(formData);
-            navigate('/dashboard');
+            const response = await login(formData);
+            if (response.user) {
+                navigate('/dashboard');
+            }
         } catch (err) {
-            // Error is handled by the auth context
+            // Clear password field on error
+            setFormData(prev => ({
+                ...prev,
+                password: ''
+            }));
             console.error('Login failed:', err);
         }
     };
@@ -52,6 +59,7 @@ const LoginForm = () => {
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white/90 backdrop-blur-sm py-8 px-4 shadow-xl ring-1 ring-gray-900/10 sm:rounded-xl sm:px-10">
                     <form className="space-y-6" onSubmit={handleSubmit}>
+                        {error && <ErrorMessage message={error} />}
                         <Input
                             id="email"
                             name="email"
@@ -61,7 +69,6 @@ const LoginForm = () => {
                             required
                             value={formData.email}
                             onChange={handleChange}
-                            error={error}
                         />
 
                         <Input

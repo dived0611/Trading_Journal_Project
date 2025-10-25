@@ -13,12 +13,6 @@ use App\Http\Controllers\TradeScreenshotController;
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/login', [RegisterController::class, 'login']);
 
-// Protected Routes
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/logout', [RegisterController::class, 'logout']);
-    // Add other protected routes here
-});
-
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // User routes

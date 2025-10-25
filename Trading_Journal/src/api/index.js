@@ -31,25 +31,15 @@ api.interceptors.request.use(async (config) => {
     return config;
 });
 
-// Response interceptor
+// Response interceptor for handling authentication errors
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            // Redirect to login page on unauthorized access
+        // Only redirect on 401 if it's not a login/register request
+        if (error.response?.status === 401 && 
+            !error.config.url.includes('/login') && 
+            !error.config.url.includes('/register')) {
             window.location.href = '/';
-        }
-        return Promise.reject(error);
-    }
-);
-
-// Add response interceptor for handling errors
-api.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response?.status === 401) {
-            // Handle unauthorized access
-            window.location.href = '/login';
         }
         return Promise.reject(error);
     }
@@ -57,6 +47,7 @@ api.interceptors.response.use(
 
 export const login = (credentials) => api.post('/login', credentials);
 export const register = (userData) => api.post('/register', userData);
+export const logout = () => api.post('/logout');
 export const getTrades = (filters) => api.get('/trades', { params: filters });
 export const createTrade = (tradeData) => api.post('/trades', tradeData);
 export const updateTrade = (id, tradeData) => api.put('/trades/${id}', tradeData);

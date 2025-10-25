@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../features/auth/hooks';
 import img from '../../assets/Adobe Express - file (2).png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -21,9 +22,16 @@ const Sidebar = () => {
         document.documentElement.classList.toggle('dark');
     };
 
-    const handleLogout = () => {
-        // Add your logout logic here
-        console.log('Logging out...');
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
     };
 
     return (

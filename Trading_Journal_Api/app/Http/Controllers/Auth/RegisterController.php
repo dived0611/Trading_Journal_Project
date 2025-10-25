@@ -52,9 +52,15 @@ class RegisterController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'No account found with this email address'
+            ], 401);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'The password you entered is incorrect'
             ], 401);
         }
 

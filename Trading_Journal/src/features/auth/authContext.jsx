@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { login as apiLogin, register as apiRegister } from '../api';
+import { login as apiLogin, register as apiRegister, logout as apiLogout } from '../api';
 
 const AuthContext = createContext(null);
 
@@ -38,8 +38,18 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        setUser(null);
+    const logout = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            await apiLogout();
+            setUser(null);
+        } catch (err) {
+            setError(err.response?.data?.message || 'An error occurred during logout');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
     };
 
     const value = {
